@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Inventory & Procurement Dashboard</title>
+<style>
+  /* Reset */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background:#f7f9fc;
+    color:#333;
+    display:flex;
+    min-height:100vh;
+  }
+  /* Sidebar */
+  nav.sidebar {
+    width: 220px;
+    background:#2c3e50;
+    color:#ecf0f1;
+    display:flex;
+    flex-direction: column;
+  }
+  nav.sidebar h2 {
+    text-align:center;
+    padding: 1rem 0;
+    font-weight: 700;
+    border-bottom: 1px solid #34495e;
+  }
+  nav.sidebar ul {
+    list-style:none;
+    padding: 0;
+    margin:0;
+    flex-grow: 1;
+  }
+  nav.sidebar ul li {
+    border-bottom: 1px solid #34495e;
+  }
+  nav.sidebar ul li a {
+    display:block;
+    padding: 1rem 1.5rem;
+    color:#ecf0f1;
+    text-decoration:none;
+    transition: background 0.3s;
+  }
+  nav.sidebar ul li a:hover, nav.sidebar ul li a.active {
+    background:#34495e;
+  }
+  /* Header */
+  header {
+    height: 60px;
+    background:#2980b9;
+    color:#ecf0f1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 0 1.5rem;
+    flex-shrink: 0;
+    width: 100%;
+  }
+  header h1 {
+    font-weight: 700;
+    font-size: 1.25rem;
+  }
+  header .user-info {
+    font-size: 0.9rem;
+  }
+  /* Main content */
+  main.content {
+    flex-grow: 1;
+    padding: 1.5rem 2rem;
+    overflow-y: auto;
+  }
+  /* Dashboard cards */
+  .dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .card {
+    background:#fff;
+    padding:1.5rem;
+    border-radius:8px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    display:flex;
+    flex-direction: column;
+    justify-content:center;
+  }
+  .card h3 {
+    margin:0 0 0.5rem 0;
+    font-weight: 600;
+    font-size: 1rem;
+    color:#2980b9;
+  }
+  .card p {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  /* Table styling */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background:#fff;
+    border-radius: 8px;
+    overflow:hidden;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+  }
+  thead {
+    background:#2980b9;
+    color:#fff;
+  }
+  thead th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  tbody tr:nth-child(even) {
+    background:#f3f6f9;
+  }
+  tbody td {
+    padding: 1rem;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #ddd;
+  }
+  tbody td.qty, tbody td.price {
+    text-align: right;
+    font-weight: 600;
+    color:#2980b9;
+  }
+  /* Form for purchase request */
+  form.purchase-request {
+    margin-top: 2rem;
+    background:#fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+    max-width: 480px;
+  }
+  form.purchase-request h3 {
+    margin-top: 0;
+    color: #2980b9;
+  }
+  form.purchase-request label {
+    display:block;
+    margin: 0.8rem 0 0.3rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  form.purchase-request input[type="text"],
+  form.purchase-request input[type="number"],
+  form.purchase-request select {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: border-color 0.3s;
+  }
+  form.purchase-request input[type="text"]:focus,
+  form.purchase-request input[type="number"]:focus,
+  form.purchase-request select:focus {
+    border-color: #2980b9;
+    outline:none;
+  }
+  form.purchase-request button {
+    margin-top: 1.2rem;
+    background:#2980b9;
+    color:#fff;
+    border:none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor:pointer;
+    transition: background 0.3s;
+  }
+  form.purchase-request button:hover {
+    background:#1f5f8b;
+  }
+  /* Responsive */
+  @media (max-width: 768px) {
+    body {
+      flex-direction: column;
+    }
+    nav.sidebar {
+      width: 100%;
+      flex-direction: row;
+      overflow-x: auto;
+    }
+    nav.sidebar ul {
+      flex-direction: row;
+    }
+    nav.sidebar ul li {
+      flex: 1 1 auto;
+      border-bottom: none;
+      border-right: 1px solid #34495e;
+    }
+    nav.sidebar ul li:last-child {
+      border-right: none;
+    }
+    main.content {
+      padding: 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav class="sidebar" aria-label="Primary Navigation">
+  <h2>Inventory</h2>
+  <ul>
+    <li><a href="#" class="active" aria-current="page">Dashboard</a></li>
+    <li><a href="#">Inventory</a></li>
+    <li><a href="#">Procurement</a></li>
+    <li><a href="#">Suppliers</a></li>
+    <li><a href="#">Reports</a></li>
+  </ul>
+</nav>
+
+<div style="flex-grow:1; display:flex; flex-direction:column; min-height:100vh;">
+  <header>
+    <h1>Inventory & Procurement</h1>
+    <div class="user-info">Hi, User</div>
+  </header>
+
+  <main class="content" role="main" aria-label="Dashboard content">
+    <!-- Dashboard summary -->
+    <section class="dashboard-cards" aria-label="Summary cards">
+      <article class="card" tabindex="0">
+        <h3>Total Stock Items</h3>
+        <p>350</p>
+      </article>
+      <article class="card" tabindex="0">
+        <h3>Pending Purchase Requests</h3>
+        <p>7</p>
+      </article>
+      <article class="card" tabindex="0">
+        <h3>Suppliers</h3>
+        <p>12</p>
+      </article>
+    </section>
+
+    <!-- Inventory table -->
+    <section aria-label="Inventory list">
+      <h2>Inventory Items</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Stock Qty</th>
+            <th>Price (RM)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr tabindex="0">
+            <td>DRY-001-500</td>
+            <td>Curry Powder Babas 500GM</td>
+            <td>Spices</td>
+            <td class="qty">150</td>
+            <td class="price">50.00</td>
+          </tr>
+          <tr tabindex="0">
+            <td>DRY-002-450</td>
+            <td>Chili Powder Babas 450GM</td>
+            <td>Spices</td>
+            <td class="qty">100</td>
+            <td class="price">48.00</td>
+          </tr>
+          <tr tabindex="0">
+            <td>DRY-003-1000</td>
+            <td>Curry Powder Babas 1KG</td>
+            <td>Spices</td>
+            <td class="qty">80</td>
+            <td class="price">60.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Purchase request form -->
+    <section aria-label="New purchase request">
+      <form class="purchase-request" id="purchaseRequestForm" novalidate>
+        <h3>Create Purchase Request</h3>
+        <label for="productSKU">Product SKU</label>
+        <input type="text" id="productSKU" name="productSKU" placeholder="e.g. DRY-001-500" required />
+
+        <label for="productName">Product Name</label>
+        <input type="text" id="productName" name="productName" placeholder="e.g. Curry Powder Babas 500GM" required />
+
+        <label for="quantity">Quantity</label>
+        <input type="number" id="quantity" name="quantity" placeholder="Enter quantity" min="1" required />
+
+        <label for="supplier">Supplier</label>
+        <select id="supplier" name="supplier" required>
+          <option value="" disabled selected>Select Supplier</option>
+          <option value="ali">Ali Supply Sdn Bhd</option>
+          <option value="badrul">Badrul Supply Sdn Bhd</option>
+        </select>
+
+        <button type="submit">Submit Request</button>
+      </form>
+    </section>
+  </main>
+</div>
+
+<script>
+  // Simple form validation & alert on submit
+  const form = document.getElementById('purchaseRequestForm');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const sku = form.productSKU.value.trim();
+    const name = form.productName.value.trim();
+    const qty = Number(form.quantity.value);
+    const supplier = form.supplier.value;
+
+    if(!sku || !name || !qty || qty < 1 || !supplier) {
+      alert('Please fill all fields correctly.');
+      return;
+    }
+
+    alert(`Purchase request submitted:\nProduct: ${name} (${sku})\nQuantity: ${qty}\nSupplier: ${supplier}`);
+    form.reset();
+  });
+</script>
+
+</body>
+</html>
