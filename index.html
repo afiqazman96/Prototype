@@ -3,32 +3,36 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Inventory & Procurement Dashboard</title>
+<title>Procurement Dashboard</title>
 <style>
   /* Reset */
   * {
     box-sizing: border-box;
   }
   body {
-    margin:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background:#f7f9fc;
-    color:#333;
+    margin:0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+    color:#4a4a4a;
     display:flex;
     min-height:100vh;
   }
   /* Sidebar */
   nav.sidebar {
     width: 220px;
-    background:#2c3e50;
-    color:#ecf0f1;
+    background:#506680;
+    color:#e7eef6;
     display:flex;
     flex-direction: column;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
   }
   nav.sidebar h2 {
     text-align:center;
-    padding: 1rem 0;
+    padding: 1.2rem 0;
     font-weight: 700;
-    border-bottom: 1px solid #34495e;
+    font-size: 1.25rem;
+    border-bottom: 1px solid #627d98;
+    letter-spacing: 1px;
   }
   nav.sidebar ul {
     list-style:none;
@@ -37,151 +41,168 @@
     flex-grow: 1;
   }
   nav.sidebar ul li {
-    border-bottom: 1px solid #34495e;
+    border-bottom: 1px solid #627d98;
   }
   nav.sidebar ul li a {
     display:block;
     padding: 1rem 1.5rem;
-    color:#ecf0f1;
+    color:#e7eef6;
     text-decoration:none;
+    font-weight: 600;
     transition: background 0.3s;
   }
   nav.sidebar ul li a:hover, nav.sidebar ul li a.active {
-    background:#34495e;
+    background:#3e5873;
+    color:#cbd6e2;
   }
   /* Header */
   header {
     height: 60px;
-    background:#2980b9;
-    color:#ecf0f1;
+    background:#3e5873;
+    color:#e7eef6;
     display:flex;
     align-items:center;
     justify-content:space-between;
     padding: 0 1.5rem;
     flex-shrink: 0;
     width: 100%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   }
   header h1 {
     font-weight: 700;
-    font-size: 1.25rem;
+    font-size: 1.5rem;
+    letter-spacing: 0.8px;
   }
   header .user-info {
-    font-size: 0.9rem;
+    font-size: 1rem;
+    font-weight: 600;
   }
   /* Main content */
   main.content {
     flex-grow: 1;
-    padding: 1.5rem 2rem;
+    padding: 2rem 2.5rem;
     overflow-y: auto;
   }
   /* Dashboard cards */
   .dashboard-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
+    grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
   }
   .card {
     background:#fff;
-    padding:1.5rem;
-    border-radius:8px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    padding:1.8rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(62,88,115,0.12);
     display:flex;
     flex-direction: column;
     justify-content:center;
+    transition: box-shadow 0.3s ease;
+  }
+  .card:hover {
+    box-shadow: 0 10px 25px rgba(62,88,115,0.2);
   }
   .card h3 {
-    margin:0 0 0.5rem 0;
-    font-weight: 600;
-    font-size: 1rem;
-    color:#2980b9;
+    margin:0 0 0.6rem 0;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color:#3e5873;
   }
   .card p {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 700;
     margin: 0;
+    color: #627d98;
+    letter-spacing: 1.1px;
   }
   /* Table styling */
   table {
     width: 100%;
     border-collapse: collapse;
     background:#fff;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow:hidden;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 6px 16px rgba(62,88,115,0.08);
   }
   thead {
-    background:#2980b9;
-    color:#fff;
+    background:#3e5873;
+    color:#e7eef6;
   }
   thead th {
-    padding: 1rem;
+    padding: 1.2rem 1.5rem;
     text-align: left;
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.8px;
   }
   tbody tr:nth-child(even) {
-    background:#f3f6f9;
+    background:#f4f7fb;
   }
   tbody td {
-    padding: 1rem;
-    font-size: 0.9rem;
-    border-bottom: 1px solid #ddd;
+    padding: 1.2rem 1.5rem;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #d9e2ec;
+    color: #4a4a4a;
   }
   tbody td.qty, tbody td.price {
     text-align: right;
     font-weight: 600;
-    color:#2980b9;
+    color:#3e5873;
   }
   /* Form for purchase request */
   form.purchase-request {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     background:#fff;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
-    max-width: 480px;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(62,88,115,0.1);
+    max-width: 500px;
   }
   form.purchase-request h3 {
     margin-top: 0;
-    color: #2980b9;
+    color: #3e5873;
+    font-weight: 700;
+    letter-spacing: 0.8px;
   }
   form.purchase-request label {
     display:block;
-    margin: 0.8rem 0 0.3rem;
+    margin: 1rem 0 0.5rem;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    color: #506680;
   }
   form.purchase-request input[type="text"],
   form.purchase-request input[type="number"],
   form.purchase-request select {
     width: 100%;
-    padding: 0.6rem 0.8rem;
-    border: 1.5px solid #ccc;
-    border-radius: 6px;
-    font-size: 0.9rem;
+    padding: 0.7rem 1rem;
+    border: 1.8px solid #cbd6e2;
+    border-radius: 8px;
+    font-size: 1rem;
     transition: border-color 0.3s;
+    color: #4a4a4a;
   }
   form.purchase-request input[type="text"]:focus,
   form.purchase-request input[type="number"]:focus,
   form.purchase-request select:focus {
-    border-color: #2980b9;
+    border-color: #3e5873;
     outline:none;
   }
   form.purchase-request button {
-    margin-top: 1.2rem;
-    background:#2980b9;
-    color:#fff;
+    margin-top: 1.5rem;
+    background:#3e5873;
+    color:#e7eef6;
     border:none;
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: 6px;
+    padding: 0.9rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 8px;
     cursor:pointer;
     transition: background 0.3s;
   }
   form.purchase-request button:hover {
-    background:#1f5f8b;
+    background:#2a3f55;
   }
   /* Responsive */
   @media (max-width: 768px) {
@@ -199,13 +220,13 @@
     nav.sidebar ul li {
       flex: 1 1 auto;
       border-bottom: none;
-      border-right: 1px solid #34495e;
+      border-right: 1px solid #627d98;
     }
     nav.sidebar ul li:last-child {
       border-right: none;
     }
     main.content {
-      padding: 1rem;
+      padding: 1.5rem 1rem;
     }
   }
 </style>
@@ -213,11 +234,11 @@
 <body>
 
 <nav class="sidebar" aria-label="Primary Navigation">
-  <h2>Inventory</h2>
+  <h2>Procurement</h2>
   <ul>
     <li><a href="#" class="active" aria-current="page">Dashboard</a></li>
-    <li><a href="#">Inventory</a></li>
-    <li><a href="#">Procurement</a></li>
+    <li><a href="#">Purchase Requests</a></li>
+    <li><a href="#">Orders</a></li>
     <li><a href="#">Suppliers</a></li>
     <li><a href="#">Reports</a></li>
   </ul>
@@ -225,7 +246,7 @@
 
 <div style="flex-grow:1; display:flex; flex-direction:column; min-height:100vh;">
   <header>
-    <h1>Inventory & Procurement</h1>
+    <h1>Procurement Dashboard</h1>
     <div class="user-info">Hi, User</div>
   </header>
 
@@ -233,53 +254,53 @@
     <!-- Dashboard summary -->
     <section class="dashboard-cards" aria-label="Summary cards">
       <article class="card" tabindex="0">
-        <h3>Total Stock Items</h3>
-        <p>350</p>
-      </article>
-      <article class="card" tabindex="0">
         <h3>Pending Purchase Requests</h3>
         <p>7</p>
       </article>
       <article class="card" tabindex="0">
-        <h3>Suppliers</h3>
+        <h3>Approved Requests</h3>
+        <p>23</p>
+      </article>
+      <article class="card" tabindex="0">
+        <h3>Total Suppliers</h3>
         <p>12</p>
       </article>
     </section>
 
-    <!-- Inventory table -->
-    <section aria-label="Inventory list">
-      <h2>Inventory Items</h2>
+    <!-- Procurement table -->
+    <section aria-label="Pending Purchase Requests list">
+      <h2>Pending Purchase Requests</h2>
       <table>
         <thead>
           <tr>
-            <th>SKU</th>
+            <th>Request ID</th>
             <th>Product Name</th>
-            <th>Category</th>
-            <th>Stock Qty</th>
-            <th>Price (RM)</th>
+            <th>Quantity</th>
+            <th>Supplier</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
           <tr tabindex="0">
-            <td>DRY-001-500</td>
+            <td>PR-1001</td>
             <td>Curry Powder Babas 500GM</td>
-            <td>Spices</td>
-            <td class="qty">150</td>
-            <td class="price">50.00</td>
+            <td class="qty">50</td>
+            <td>Ali Supply Sdn Bhd</td>
+            <td>Pending</td>
           </tr>
           <tr tabindex="0">
-            <td>DRY-002-450</td>
+            <td>PR-1002</td>
             <td>Chili Powder Babas 450GM</td>
-            <td>Spices</td>
-            <td class="qty">100</td>
-            <td class="price">48.00</td>
+            <td class="qty">40</td>
+            <td>Badrul Supply Sdn Bhd</td>
+            <td>Pending</td>
           </tr>
           <tr tabindex="0">
-            <td>DRY-003-1000</td>
+            <td>PR-1003</td>
             <td>Curry Powder Babas 1KG</td>
-            <td>Spices</td>
-            <td class="qty">80</td>
-            <td class="price">60.00</td>
+            <td class="qty">30</td>
+            <td>Ali Supply Sdn Bhd</td>
+            <td>Pending</td>
           </tr>
         </tbody>
       </table>
