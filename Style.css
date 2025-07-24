@@ -1,0 +1,218 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin:0; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+  color:#4a4a4a;
+  display:flex;
+  min-height:100vh;
+}
+nav.sidebar {
+  width: 220px;
+  background:#506680;
+  color:#e7eef6;
+  display:flex;
+  flex-direction: column;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+}
+nav.sidebar h2 {
+  text-align:center;
+  padding: 1.2rem 0;
+  font-weight: 700;
+  font-size: 1.25rem;
+  border-bottom: 1px solid #627d98;
+  letter-spacing: 1px;
+}
+nav.sidebar ul {
+  list-style:none;
+  padding: 0;
+  margin:0;
+  flex-grow: 1;
+}
+nav.sidebar ul li {
+  border-bottom: 1px solid #627d98;
+}
+nav.sidebar ul li a {
+  display:block;
+  padding: 1rem 1.5rem;
+  color:#e7eef6;
+  text-decoration:none;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+nav.sidebar ul li a:hover,
+nav.sidebar ul li a.active {
+  background:#3e5873;
+  color:#cbd6e2;
+}
+header {
+  height: 60px;
+  background:#3e5873;
+  color:#e7eef6;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 0 1.5rem;
+  flex-shrink: 0;
+  width: 100%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+header h1 {
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 0.8px;
+}
+header .user-info {
+  font-size: 1rem;
+  font-weight: 600;
+}
+main.content {
+  flex-grow: 1;
+  padding: 2rem 2.5rem;
+  overflow-y: auto;
+}
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.card {
+  background:#fff;
+  padding:1.8rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(62,88,115,0.12);
+  display:flex;
+  flex-direction: column;
+  justify-content:center;
+  transition: box-shadow 0.3s ease;
+}
+.card:hover {
+  box-shadow: 0 10px 25px rgba(62,88,115,0.2);
+}
+.card h3 {
+  margin:0 0 0.6rem 0;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color:#3e5873;
+}
+.card p {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #627d98;
+  letter-spacing: 1.1px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background:#fff;
+  border-radius: 12px;
+  overflow:hidden;
+  box-shadow: 0 6px 16px rgba(62,88,115,0.08);
+}
+thead {
+  background:#3e5873;
+  color:#e7eef6;
+}
+thead th {
+  padding: 1.2rem 1.5rem;
+  text-align: left;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.8px;
+}
+tbody tr:nth-child(even) {
+  background:#f4f7fb;
+}
+tbody td {
+  padding: 1.2rem 1.5rem;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #d9e2ec;
+  color: #4a4a4a;
+}
+tbody td.qty,
+tbody td.price {
+  text-align: left;
+  font-weight: 600;
+  color:#3e5873;
+}
+form.purchase-request {
+  margin-top: 2.5rem;
+  background:#fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(62,88,115,0.1);
+  max-width: 500px;
+}
+form.purchase-request h3 {
+  margin-top: 0;
+  color: #3e5873;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+}
+form.purchase-request label {
+  display:block;
+  margin: 1rem 0 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #506680;
+}
+form.purchase-request input[type="text"],
+form.purchase-request input[type="number"],
+form.purchase-request select {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 1.8px solid #cbd6e2;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  color: #4a4a4a;
+}
+form.purchase-request input[type="text"]:focus,
+form.purchase-request input[type="number"]:focus,
+form.purchase-request select:focus {
+  border-color: #3e5873;
+  outline:none;
+}
+form.purchase-request button {
+  margin-top: 1.5rem;
+  background:#3e5873;
+  color:#e7eef6;
+  border:none;
+  padding: 0.9rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor:pointer;
+  transition: background 0.3s;
+}
+form.purchase-request button:hover {
+  background:#2a3f55;
+}
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+  }
+  nav.sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  nav.sidebar ul {
+    flex-direction: row;
+  }
+  nav.sidebar ul li {
+    flex: 1 1 auto;
+    border-bottom: none;
+    border-right: 1px solid #627d98;
+  }
+  nav.sidebar ul li:last-child {
+    border-right: none;
+  }
+  main.content {
+    padding: 1.5rem 1rem;
+  }
+}
