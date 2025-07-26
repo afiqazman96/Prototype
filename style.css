@@ -224,14 +224,15 @@ form.purchase-request button:hover {
 }
 
 .pending-purchase-table-wrapper {
-	overflow-x: auto;
+	/* overflow-x: auto; */
 
 	table {
+		overflow-x: auto;
 		thead {
 			th:first-child {
 				background-color: var(--color-primary-grey-base);
 				position: sticky;
-				left: 0;
+				left: -1rem;
 			}
 		}
 
@@ -239,13 +240,13 @@ form.purchase-request button:hover {
 			td:first-child {
 				background-color: var(--color-neutral-white-base);
 				position: sticky;
-				left: 0;
+				left: -1rem;
 			}
 			tr:nth-child(2n) {
 				td:first-child {
 					background-color: var(--color-primary-grey-light);
 					position: sticky;
-					left: 0;
+					left: -1rem;
 				}
 			}
 		}
