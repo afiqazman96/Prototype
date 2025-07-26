@@ -1,3 +1,9 @@
+:root {
+	--color-primary-grey-light: #f4f7fb;
+	--color-primary-grey-base: #3e5873;
+	--color-neutral-white-base: #ffffff;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -215,4 +221,33 @@ form.purchase-request button:hover {
   main.content {
     padding: 1.5rem 1rem;
   }
+}
+
+.pending-purchase-table-wrapper {
+	overflow-x: auto;
+
+	table {
+		thead {
+			th:first-child {
+				background-color: var(--color-primary-grey-base);
+				position: sticky;
+				left: 0;
+			}
+		}
+
+		tbody {
+			td:first-child {
+				background-color: var(--color-neutral-white-base);
+				position: sticky;
+				left: 0;
+			}
+			tr:nth-child(2n) {
+				td:first-child {
+					background-color: var(--color-primary-grey-light);
+					position: sticky;
+					left: 0;
+				}
+			}
+		}
+	}
 }
