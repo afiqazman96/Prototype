@@ -228,16 +228,23 @@ form.purchase-request button:hover {
 
 	table {
 		overflow-x: auto;
+
 		thead {
 			th:first-child {
+				border-top-left-radius: 12px;
 				background-color: var(--color-primary-grey-base);
 				position: sticky;
 				left: -1rem;
+			}
+
+			th:last-child {
+				border-top-right-radius: 12px;
 			}
 		}
 
 		tbody {
 			td:first-child {
+				border-bottom-left-radius: 12px;
 				background-color: var(--color-neutral-white-base);
 				position: sticky;
 				left: -1rem;
