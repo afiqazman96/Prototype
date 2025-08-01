@@ -1,40 +1,109 @@
-:root {
-	--color-primary-grey-light: #f4f7fb;
-	--color-primary-grey-base: #3e5873;
-	--color-neutral-white-base: #ffffff;
-}
-
+/* Resetting default browser styling */
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
+
+/* General Styles */
 body {
-  margin:0; 
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
-  color:#4a4a4a;
-  display:flex;
-  min-height:100vh;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
 }
-nav.sidebar {
-  width: 220px;
-  background:#506680;
-  color:#e7eef6;
-  display:flex;
-  flex-direction: column;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+
+/* Container */
+.container {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 50px;
 }
-nav.sidebar h2 {
-  text-align:center;
-  padding: 1.2rem 0;
-  font-weight: 700;
-  font-size: 1.25rem;
-  border-bottom: 1px solid #627d98;
-  letter-spacing: 1px;
+
+/* Sidebar */
+.sidebar {
+  background-color: #2c3e50;
+  color: white;
+  width: 250px;
+  padding: 20px;
 }
-nav.sidebar ul {
-  list-style:none;
-  padding: 0;
-  margin:0;
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.sidebar ul {
+  list-style-type: none;
+}
+
+.sidebar ul li {
+  margin: 15px 0;
+}
+
+.sidebar ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+  padding: 10px;
+  display: block;
+}
+
+.sidebar ul li a:hover {
+  background-color: #34495e;
+}
+
+/* Main Content */
+.main-content {
+  flex-grow: 1;
+  background-color: #fff;
+  padding: 30px;
+}
+
+.header {
+  margin-bottom: 40px;
+}
+
+.header h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.header p {
+  font-size: 18px;
+  color: #777;
+}
+
+.statistics {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 30px;
+}
+
+.card {
+  background-color: #ecf0f1;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 24px;
+  font-weight: bold;
+  color: #27ae60;
+}  margin:0;
   flex-grow: 1;
 }
 nav.sidebar ul li {
