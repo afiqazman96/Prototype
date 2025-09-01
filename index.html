@@ -1,215 +1,758 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>POS System</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>POS Dashboard — Single File</title>
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f5f6fa;
-      color: #2f3640;
+    :root{
+      --bg: #0f172a; /* slate-900 */
+      --panel: #0b1220cc; /* translucent */
+      --card: #111827; /* gray-900 */
+      --muted: #94a3b8; /* slate-400 */
+      --text: #e5e7eb; /* gray-200 */
+      --brand: #22d3ee; /* cyan-400 */
+      --brand-2: #6366f1; /* indigo-500 */
+      --accent: #34d399; /* emerald-400 */
+      --danger: #ef4444; /* red-500 */
+      --warning: #f59e0b; /* amber-500 */
+      --ok: #10b981; /* green-500 */
+      --radius: 18px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
     }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:
+        radial-gradient(1200px 800px at 10% -10%, #1f2937 0%, transparent 60%),
+        radial-gradient(1200px 800px at 110% 0%, #0ea5e9 0%, transparent 40%),
+        radial-gradient(1200px 800px at 50% 120%, #6d28d9 0%, transparent 40%),
+        var(--bg);
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      letter-spacing:.2px;
+    }
+    a{color:inherit}/* Layout */
+.app{display:grid; grid-template-columns: 270px 1fr; min-height:100vh}
+.sidebar{
+  position:sticky; top:0; height:100vh; padding:24px 18px; backdrop-filter: blur(10px);
+  background: linear-gradient(180deg, #0b1220cc 0%, #0b122080 100%);
+  border-right: 1px solid #1f2937; box-shadow: var(--shadow);
+}
+.brand{display:flex; gap:12px; align-items:center; margin-bottom:18px}
+.logo{width:42px; height:42px; border-radius:12px; background: linear-gradient(135deg, var(--brand), var(--brand-2)); display:grid; place-items:center; font-weight:800; color:#0b1220}
+.brand .title{font-weight:800; font-size:1.1rem; line-height:1.1}
+.muted{color:var(--muted); font-size:.85rem}
 
-    header {
-      background: #0984e3;
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
+.nav{margin-top:10px; display:flex; flex-direction:column; gap:8px}
+.nav button{
+  all:unset; display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:12px; cursor:pointer;
+  transition:.18s transform, .18s background, .18s color;
+  color:var(--muted);
+}
+.nav button.active, .nav button:hover{background:#0ea5e922; color:#e2e8f0}
+.nav svg{width:18px; height:18px}
 
-    .container {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 20px;
-      padding: 20px;
-    }
+.content{padding:26px; }
+.topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px}
+.search{display:flex; align-items:center; background:#0b1220cc; border:1px solid #1f2937; padding:10px 12px; gap:8px; border-radius:12px}
+.search input{all:unset; width:280px}
+.pill{padding:7px 12px; border:1px solid #1f2937; background:#0b1220cc; border-radius:999px}
 
-    .products, .cart {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
+.grid{display:grid; gap:16px}
+.grid.cols-2{grid-template-columns: 1.4fr 1fr}
+.grid.cols-3{grid-template-columns: repeat(3, 1fr)}
+.grid.responsive{grid-template-columns: repeat(auto-fill, minmax(220px, 1fr))}
 
-    h2 {
-      margin-top: 0;
-      font-size: 1.2rem;
-      margin-bottom: 15px;
-      color: #0984e3;
-    }
+.card{
+  background: #0b1220cc; border:1px solid #1f2937; border-radius: var(--radius); box-shadow: var(--shadow);
+  padding:18px;
+}
+.card h3{margin:0 0 10px 0; font-size:1.05rem}
 
-    .product-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 15px;
-    }
+.btn{all:unset; display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; cursor:pointer; border:1px solid #1f2937; background:#0b1220cc}
+.btn.primary{background: linear-gradient(135deg, var(--brand-2), var(--brand)); color:#0b1220; font-weight:700; border:none}
+.btn.success{background: linear-gradient(135deg, var(--accent), #22c55e); color:#052e1e; font-weight:700; border:none}
+.btn.danger{background:#ef44441a; color:#fecaca; border:1px solid #7f1d1d}
+.btn:hover{transform: translateY(-1px)}
 
-    .product {
-      background: #f1f2f6;
-      padding: 15px;
-      border-radius: 10px;
-      text-align: center;
-      transition: 0.3s;
-    }
+.table{width:100%; border-collapse: collapse; font-size:.95rem}
+.table th,.table td{padding:10px 8px; border-bottom:1px solid #1f2937}
+.table th{color:#94a3b8; text-align:left; font-weight:600}
 
-    .product:hover {
-      background: #dfe6e9;
-    }
+.product-card{display:flex; flex-direction:column; gap:10px; background:#0b1220cc; border:1px solid #1f2937; border-radius:16px; padding:14px}
+.product-card img{width:100%; height:120px; object-fit:cover; border-radius:12px; background:#0f172a}
+.row{display:flex; gap:12px; align-items:center}
+.row.space{justify-content:space-between}
+.tag{font-size:.75rem; padding:4px 8px; border-radius:999px; border:1px solid #1f2937; color:#a5b4fc}
 
-    .product button {
-      background: #0984e3;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      color: white;
-      cursor: pointer;
-      margin-top: 10px;
-      font-size: 0.9rem;
-    }
+.right{ text-align:right }
 
-    .product button:hover {
-      background: #74b9ff;
-    }
+/* Forms */
+.field{display:flex; flex-direction:column; gap:6px}
+.field label{font-size:.85rem; color:#9ca3af}
+.input, select, textarea{all:unset; padding:10px 12px; border:1px solid #1f2937; background:#0b1220cc; border-radius:12px}
+.input[type="number"]{text-align:right}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+.toolbar{display:flex; gap:10px; flex-wrap:wrap}
 
-    th, td {
-      padding: 10px;
-      text-align: left;
-    }
+/* Modal */
+.modal{position:fixed; inset:0; display:none; place-items:center; background:rgba(2,6,23,.6); z-index:50}
+.modal.open{display:grid}
+.modal .dialog{width:min(560px, 92vw); background:#0b1220; border:1px solid #1f2937; border-radius:18px; padding:18px; box-shadow: var(--shadow)}
+.modal .dialog h3{margin:0 0 12px 0}
 
-    th {
-      background: #f1f2f6;
-    }
+/* Cart */
+.qty{display:inline-flex; align-items:center; gap:6px}
+.qty button{all:unset; width:26px; height:26px; display:grid; place-items:center; border-radius:8px; border:1px solid #1f2937; cursor:pointer}
 
-    tr:nth-child(even) {
-      background: #f9f9f9;
-    }
+.totals{margin-top:12px; display:grid; gap:6px}
+.totals .line{display:flex; justify-content:space-between; color:#cbd5e1}
+.totals .grand{font-size:1.2rem; font-weight:800; color:#e2e8f0}
 
-    .total {
-      font-weight: bold;
-      text-align: right;
-      margin-top: 10px;
-      font-size: 1.1rem;
-    }
+/* Small helpers */
+.hide{display:none !important}
+.note{font-size:.85rem; color:#94a3b8}
+.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+.center{display:grid; place-items:center}
 
-    .checkout {
-      margin-top: 15px;
-      width: 100%;
-      padding: 12px;
-      border: none;
-      background: #00b894;
-      color: white;
-      font-size: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+@media (max-width: 1024px){
+  .app{grid-template-columns: 1fr}
+  .sidebar{position:static; height:auto}
+  .grid.cols-2{grid-template-columns: 1fr}
+}
 
-    .checkout:hover {
-      background: #55efc4;
-    }
   </style>
 </head>
 <body>
-  <header>Simple POS System</header>
-
-  <div class="container">
-    <!-- Products -->
-    <div class="products">
-      <h2>Products</h2>
-      <div class="product-list" id="productList"></div>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">POS</div>
+      <div>
+        <div class="title" id="shopName">My Shop</div>
+        <div class="muted">Point of Sale</div>
+      </div>
     </div>
-
-    <!-- Cart -->
-    <div class="cart">
-      <h2>Cart</h2>
-      <table id="cartTable">
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Qty</th>
-            <th>Price</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <div class="total" id="total">Total: $0.00</div>
-      <button class="checkout" onclick="checkout()">Checkout</button>
+    <div class="nav">
+      <button data-page="sell" class="active">📟 <span>Sell</span></button>
+      <button data-page="products">🧺 <span>Products</span></button>
+      <button data-page="transactions">🧾 <span>Transactions</span></button>
+      <button data-page="reports">📊 <span>Reports</span></button>
+      <button data-page="settings">⚙️ <span>Settings</span></button>
     </div>
+    <div style="margin-top:auto" class="muted">
+      <div style="margin-top:18px">Storage: <span class="mono" id="storageSize">0 KB</span></div>
+      <div class="note">Data disimpan dalam browser (localStorage). Sesuai untuk demo GitHub Pages.</div>
+    </div>
+  </aside>  <!-- Main -->  <main class="content">
+    <div class="topbar">
+      <div class="search"><span>🔎</span><input id="globalSearch" placeholder="Search products..."/></div>
+      <div class="pill" id="today"></div>
+    </div><!-- SELL PAGE -->
+<section id="page-sell" class="grid cols-2">
+  <div class="card">
+    <div class="row space" style="margin-bottom:8px">
+      <h3>Browse Products</h3>
+      <div class="toolbar">
+        <button class="btn" id="filterAll">All</button>
+        <button class="btn" id="filterActive">Active</button>
+        <button class="btn" id="filterInactive">Inactive</button>
+      </div>
+    </div>
+    <div class="grid responsive" id="sellProducts"></div>
   </div>
 
-  <script>
-    const products = [
-      { id: 1, name: "Coffee", price: 3.5 },
-      { id: 2, name: "Tea", price: 2.0 },
-      { id: 3, name: "Sandwich", price: 5.0 },
-      { id: 4, name: "Cake", price: 4.0 },
-      { id: 5, name: "Juice", price: 3.0 }
+  <div class="card">
+    <h3>Cart</h3>
+    <table class="table" id="cartTable">
+      <thead>
+        <tr><th>Item</th><th class="right">Price</th><th class="right">Qty</th><th class="right">Total</th><th></th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="totals">
+      <div class="line"><span>Subtotal</span><span class="mono" id="subtotal">0.00</span></div>
+      <div class="line"><span>Discount (%)</span>
+        <span><input class="input" style="width:90px; text-align:right" type="number" id="discount" min="0" max="100" step="0.5" value="0"></span>
+      </div>
+      <div class="line"><span>Tax (<span id="taxRateLabel">0</span>%)</span><span class="mono" id="tax">0.00</span></div>
+      <div class="line grand"><span>Grand Total</span><span class="mono" id="grand">0.00</span></div>
+    </div>
+    <div class="row" style="margin-top:10px; gap:12px">
+      <div class="field" style="flex:1">
+        <label>Cash Received</label>
+        <input class="input" id="cash" type="number" step="0.01" min="0" placeholder="0.00" />
+      </div>
+      <div class="field" style="width:180px">
+        <label>Change</label>
+        <div class="input mono" id="change">0.00</div>
+      </div>
+    </div>
+    <div class="row" style="margin-top:12px; justify-content:space-between">
+      <button class="btn danger" id="clearCart">Clear Cart</button>
+      <button class="btn success" id="checkoutBtn">Checkout</button>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS PAGE -->
+<section id="page-products" class="hide">
+  <div class="row space" style="margin-bottom:12px">
+    <h3>Products</h3>
+    <div class="toolbar">
+      <button class="btn primary" id="btnAddProduct">+ Add Product</button>
+      <button class="btn" id="btnSeed">Seed Demo</button>
+      <button class="btn danger" id="btnWipe">Wipe All</button>
+    </div>
+  </div>
+  <table class="table" id="productsTable">
+    <thead><tr><th>SKU</th><th>Name</th><th class="right">Price</th><th>Status</th><th class="right">Actions</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<!-- TRANSACTIONS PAGE -->
+<section id="page-transactions" class="hide">
+  <div class="row space" style="margin-bottom:12px">
+    <h3>Transactions</h3>
+    <div class="toolbar">
+      <button class="btn" id="btnExport">Export CSV</button>
+      <button class="btn danger" id="btnClearTx">Clear</button>
+    </div>
+  </div>
+  <table class="table" id="txTable">
+    <thead><tr><th>Date</th><th class="right">Items</th><th class="right">Subtotal</th><th class="right">Discount</th><th class="right">Tax</th><th class="right">Total</th><th></th></tr></thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<!-- REPORTS PAGE -->
+<section id="page-reports" class="hide grid cols-2">
+  <div class="card">
+    <h3>Summary</h3>
+    <div class="grid cols-3">
+      <div class="card center"><div>
+        <div class="muted">Today</div>
+        <div style="font-size:1.4rem; font-weight:800" id="rToday">0.00</div>
+      </div></div>
+      <div class="card center"><div>
+        <div class="muted">Last 7 days</div>
+        <div style="font-size:1.4rem; font-weight:800" id="rWeek">0.00</div>
+      </div></div>
+      <div class="card center"><div>
+        <div class="muted">This Month</div>
+        <div style="font-size:1.4rem; font-weight:800" id="rMonth">0.00</div>
+      </div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Top Product</h3>
+    <div id="topProduct" class="muted">—</div>
+  </div>
+  <div class="card" style="grid-column:1/-1">
+    <h3>Sales — Last 7 Days</h3>
+    <canvas id="chart" height="200"></canvas>
+  </div>
+</section>
+
+<!-- SETTINGS PAGE -->
+<section id="page-settings" class="hide grid cols-2">
+  <div class="card">
+    <h3>Store Settings</h3>
+    <div class="grid cols-2">
+      <div class="field"><label>Shop Name</label><input id="sName" class="input" placeholder="My Shop"/></div>
+      <div class="field"><label>Currency Symbol</label><input id="sCurrency" class="input" placeholder="RM"/></div>
+      <div class="field"><label>Tax Rate (%)</label><input id="sTax" type="number" step="0.1" min="0" class="input"/></div>
+      <div class="field"><label>Theme Tint</label><input id="sTint" class="input" placeholder="#22d3ee"/></div>
+    </div>
+    <div class="row" style="margin-top:12px; gap:10px">
+      <button class="btn success" id="btnSaveSettings">Save</button>
+      <span class="note">Setting disimpan dalam browser.</span>
+    </div>
+  </div>
+  <div class="card">
+    <h3>About</h3>
+    <div class="note">Single-file POS template — HTML + CSS + JS. No backend. Data stored in localStorage.</div>
+    <div style="margin-top:10px" class="mono" id="aboutMeta"></div>
+  </div>
+</section>
+
+  </main>
+</div><!-- Product Modal --><div class="modal" id="productModal">
+  <div class="dialog">
+    <h3 id="pmTitle">Add Product</h3>
+    <div class="grid cols-2">
+      <div class="field"><label>Name</label><input class="input" id="pmName"/></div>
+      <div class="field"><label>Price</label><input class="input" id="pmPrice" type="number" min="0" step="0.01"/></div>
+      <div class="field"><label>SKU</label><input class="input" id="pmSku"/></div>
+      <div class="field"><label>Image URL (optional)</label><input class="input" id="pmImg"/></div>
+      <div class="field"><label>Status</label>
+        <select id="pmActive" class="input"><option value="true">Active</option><option value="false">Inactive</option></select>
+      </div>
+    </div>
+    <div class="row" style="margin-top:12px; justify-content:space-between">
+      <button class="btn" id="pmCancel">Cancel</button>
+      <div class="row" style="gap:8px">
+        <button class="btn danger hide" id="pmDelete">Delete</button>
+        <button class="btn primary" id="pmSave">Save</button>
+      </div>
+    </div>
+  </div>
+</div><!-- View Transaction Modal --><div class="modal" id="txModal">
+  <div class="dialog">
+    <h3>Transaction</h3>
+    <div id="txDetails" class="mono" style="white-space:pre-wrap"></div>
+    <div class="row" style="margin-top:12px; justify-content:flex-end">
+      <button class="btn" id="txClose">Close</button>
+    </div>
+  </div>
+</div><script>
+(() => {
+  const $ = (sel, el=document) => el.querySelector(sel);
+  const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+  const fmt = (n) => `${state.settings.currency}${Number(n||0).toFixed(2)}`;
+  const uid = () => Math.random().toString(36).slice(2,10);
+  const todayStr = () => new Date().toLocaleDateString();
+
+  const LS_KEYS = { products:'pos.products', tx:'pos.transactions', settings:'pos.settings' };
+
+  const state = {
+    products: [],
+    cart: [],
+    transactions: [],
+    settings: { shopName:'My Shop', currency:'RM', tax:6, tint:'#22d3ee' },
+    editingProductId: null,
+    productFilter: 'all'
+  };
+
+  // --- Storage ---
+  const load = () => {
+    state.products = JSON.parse(localStorage.getItem(LS_KEYS.products) || '[]');
+    state.transactions = JSON.parse(localStorage.getItem(LS_KEYS.tx) || '[]');
+    state.settings = Object.assign(state.settings, JSON.parse(localStorage.getItem(LS_KEYS.settings) || '{}'));
+  };
+  const save = () => {
+    localStorage.setItem(LS_KEYS.products, JSON.stringify(state.products));
+    localStorage.setItem(LS_KEYS.tx, JSON.stringify(state.transactions));
+    localStorage.setItem(LS_KEYS.settings, JSON.stringify(state.settings));
+    updateStorageSize();
+  };
+  const updateStorageSize = () => {
+    const all = Object.values(LS_KEYS).map(k => (localStorage.getItem(k)||'')).join('');
+    const kb = (new Blob([all]).size/1024).toFixed(1);
+    $('#storageSize').textContent = kb + ' KB';
+  };
+
+  // --- Seed Demo Data ---
+  const seedDemo = () => {
+    state.products = [
+      {id:uid(), sku:'CF001', name:'Coffee Americano', price:7.50, img:'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=800&auto=format&fit=crop', active:true},
+      {id:uid(), sku:'LT002', name:'Café Latte', price:9.00, img:'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=800&auto=format&fit=crop', active:true},
+      {id:uid(), sku:'TE003', name:'Premium Tea', price:6.00, img:'https://images.unsplash.com/photo-1517701604599-bb29b565090c?q=80&w=800&auto=format&fit=crop', active:true},
+      {id:uid(), sku:'CK004', name:'Cheese Cake', price:12.00, img:'https://images.unsplash.com/photo-1475855581690-80accde3ae2b?q=80&w=800&auto=format&fit=crop', active:true},
+      {id:uid(), sku:'SN005', name:'Chicken Sandwich', price:10.00, img:'https://images.unsplash.com/photo-1550317138-10000687a72b?q=80&w=800&auto=format&fit=crop', active:true},
+      {id:uid(), sku:'JS006', name:'Fresh Juice', price:8.00, img:'https://images.unsplash.com/photo-1570158268183-d296b2892211?q=80&w=800&auto=format&fit=crop', active:true},
+      {id:uid(), sku:'WF007', name:'Waffle', price:9.50, img:'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?q=80&w=800&auto=format&fit=crop', active:false},
     ];
+    save();
+    renderAll();
+  };
 
-    const cart = [];
+  // --- Navigation ---
+  const showPage = (name) => {
+    $$('[id^="page-"]').forEach(s=>s.classList.add('hide'));
+    $('#page-'+name).classList.remove('hide');
+    $$('.nav button').forEach(b=>b.classList.remove('active'));
+    $(`.nav button[data-page="${name}"]`).classList.add('active');
+    if(name==='reports') renderReports();
+    if(name==='transactions') renderTx();
+    if(name==='products') renderProductsTable();
+    if(name==='sell') { renderSellProducts(); renderCart(); }
+  };
 
-    function renderProducts() {
-      const productList = document.getElementById("productList");
-      products.forEach(p => {
-        const div = document.createElement("div");
-        div.className = "product";
-        div.innerHTML = `
-          <h3>${p.name}</h3>
-          <p>$${p.price.toFixed(2)}</p>
-          <button onclick="addToCart(${p.id})">Add</button>
-        `;
-        productList.appendChild(div);
-      });
-    }
-
-    function addToCart(id) {
-      const product = products.find(p => p.id === id);
-      const item = cart.find(c => c.id === id);
-      if (item) {
-        item.qty++;
-      } else {
-        cart.push({ ...product, qty: 1 });
+  // --- Products rendering ---
+  const renderSellProducts = () => {
+    const wrap = $('#sellProducts');
+    wrap.innerHTML='';
+    const q = $('#globalSearch').value.toLowerCase();
+    const list = state.products.filter(p=>{
+      const statusOk = state.productFilter==='all' || (state.productFilter==='active' && p.active) || (state.productFilter==='inactive' && !p.active);
+      const searchOk = p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q);
+      return statusOk && searchOk;
+    });
+    if(!list.length){ wrap.innerHTML = `<div class="note">No products. Add some in Products page or click <b>Seed Demo</b>.</div>`; return; }
+    list.forEach(p=>{
+      const el = document.createElement('div');
+      el.className = 'product-card';
+      el.innerHTML = `
+        <img src="${p.img||''}" alt="" onerror="this.style.display='none'"/>
+        <div class="row space"><div><div style="font-weight:700">${p.name}</div><div class="muted mono">${p.sku}</div></div>
+          <div class="tag">${fmt(p.price)}</div>
+        </div>
+        <button class="btn primary" data-add="${p.id}">Add</button>
+      `;
+      if(!p.active){
+        const badge = document.createElement('div');
+        badge.className='tag'; badge.style.color='#fca5a5'; badge.textContent='Inactive';
+        el.appendChild(badge);
       }
-      renderCart();
-    }
+      wrap.appendChild(el);
+    });
+  };
 
-    function renderCart() {
-      const tbody = document.querySelector("#cartTable tbody");
-      tbody.innerHTML = "";
-      let total = 0;
-      cart.forEach(item => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${item.name}</td>
-          <td>${item.qty}</td>
-          <td>$${(item.price * item.qty).toFixed(2)}</td>
-        `;
-        tbody.appendChild(row);
-        total += item.price * item.qty;
-      });
-      document.getElementById("total").innerText = "Total: $" + total.toFixed(2);
-    }
+  // --- Cart ---
+  const addToCart = (id) => {
+    const p = state.products.find(x=>x.id===id);
+    if(!p || !p.active) return;
+    const row = state.cart.find(x=>x.id===id);
+    if(row) row.qty += 1; else state.cart.push({id:p.id, name:p.name, price:p.price, qty:1});
+    renderCart();
+  };
+  const changeQty = (id, d) => {
+    const row = state.cart.find(x=>x.id===id); if(!row) return;
+    row.qty += d; if(row.qty<=0) state.cart = state.cart.filter(x=>x.id!==id);
+    renderCart();
+  };
+  const removeFromCart = (id) => { state.cart = state.cart.filter(x=>x.id!==id); renderCart(); };
+  const clearCart = () => { state.cart = []; renderCart(); };
 
-    function checkout() {
-      if (cart.length === 0) {
-        alert("Cart is empty!");
-        return;
+  const computeTotals = () => {
+    const subtotal = state.cart.reduce((s,x)=> s + x.price*x.qty, 0);
+    const discountPct = Number($('#discount').value||0);
+    const afterDisc = subtotal * (1 - discountPct/100);
+    const tax = afterDisc * (Number(state.settings.tax||0)/100);
+    const total = afterDisc + tax;
+    return {subtotal, discountPct, tax, total};
+  };
+
+  const renderCart = () => {
+    const tbody = $('#cartTable tbody');
+    tbody.innerHTML='';
+    state.cart.forEach(r=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><div>${r.name}</div><div class="muted mono">${r.id}</div></td>
+        <td class="right mono">${fmt(r.price)}</td>
+        <td class="right">
+          <span class="qty">
+            <button title="-" data-dec="${r.id}">−</button>
+            <span class="mono">${r.qty}</span>
+            <button title="+" data-inc="${r.id}">+</button>
+          </span>
+        </td>
+        <td class="right mono">${fmt(r.price*r.qty)}</td>
+        <td class="right"><button class="btn" data-del="${r.id}">Remove</button></td>`;
+      tbody.appendChild(tr);
+    });
+    const {subtotal, discountPct, tax, total} = computeTotals();
+    $('#subtotal').textContent = fmt(subtotal);
+    $('#taxRateLabel').textContent = Number(state.settings.tax||0).toFixed(1);
+    $('#tax').textContent = fmt(tax);
+    $('#grand').textContent = fmt(total);
+
+    const cash = Number($('#cash').value||0);
+    const change = Math.max(0, cash - total);
+    $('#change').textContent = fmt(change);
+  };
+
+  const checkout = () => {
+    if(!state.cart.length) return alert('Cart is empty');
+    const totals = computeTotals();
+    const tx = {
+      id: uid(),
+      date: new Date().toISOString(),
+      items: state.cart.map(x=>({...x})),
+      subtotal: Number(totals.subtotal.toFixed(2)),
+      discount: Number(totals.discountPct.toFixed(2)),
+      tax: Number(totals.tax.toFixed(2)),
+      total: Number(totals.total.toFixed(2))
+    };
+    state.transactions.unshift(tx);
+    save();
+    state.cart = [];
+    renderCart();
+    renderTx();
+    alert('Payment successful. Transaction saved.');
+  };
+
+  // --- Products CRUD ---
+  const openProductModal = (product=null) => {
+    $('#productModal').classList.add('open');
+    $('#pmTitle').textContent = product? 'Edit Product' : 'Add Product';
+    $('#pmName').value = product?.name || '';
+    $('#pmPrice').value = product?.price ?? '';
+    $('#pmSku').value = product?.sku || '';
+    $('#pmImg').value = product?.img || '';
+    $('#pmActive').value = String(product?.active ?? true);
+    state.editingProductId = product?.id || null;
+    $('#pmDelete').classList.toggle('hide', !product);
+  };
+  const closeProductModal = () => { $('#productModal').classList.remove('open'); };
+  const saveProductFromModal = () => {
+    const data = {
+      name: $('#pmName').value.trim(),
+      price: Number($('#pmPrice').value||0),
+      sku: $('#pmSku').value.trim() || uid().toUpperCase(),
+      img: $('#pmImg').value.trim(),
+      active: $('#pmActive').value==='true'
+    };
+    if(!data.name) return alert('Name required');
+    if(!(data.price>=0)) return alert('Price invalid');
+
+    if(state.editingProductId){
+      const idx = state.products.findIndex(p=>p.id===state.editingProductId);
+      if(idx>-1) state.products[idx] = {...state.products[idx], ...data};
+    } else {
+      state.products.unshift({id:uid(), ...data});
+    }
+    save();
+    closeProductModal();
+    renderProductsTable();
+    renderSellProducts();
+  };
+  const deleteProduct = (id) => {
+    if(!confirm('Delete product?')) return;
+    state.products = state.products.filter(p=>p.id!==id);
+    save();
+    renderProductsTable();
+    renderSellProducts();
+  };
+
+  const renderProductsTable = () => {
+    const tbody = $('#productsTable tbody');
+    tbody.innerHTML='';
+    const q = $('#globalSearch').value.toLowerCase();
+    state.products.filter(p=> p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q)).forEach(p=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="mono">${p.sku}</td>
+        <td>${p.name}</td>
+        <td class="right mono">${fmt(p.price)}</td>
+        <td>${p.active?'<span class="tag" style="color:#86efac">Active</span>':'<span class="tag" style="color:#fca5a5">Inactive</span>'}</td>
+        <td class="right">
+          <button class="btn" data-edit="${p.id}">Edit</button>
+          <button class="btn danger" data-remove="${p.id}">Delete</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  };
+
+  // --- Transactions ---
+  const renderTx = () => {
+    const tbody = $('#txTable tbody');
+    tbody.innerHTML='';
+    state.transactions.forEach(t=>{
+      const tr = document.createElement('tr');
+      const d = new Date(t.date);
+      tr.innerHTML = `
+        <td>${d.toLocaleString()}</td>
+        <td class="right">${t.items.reduce((s,x)=>s+x.qty,0)}</td>
+        <td class="right mono">${fmt(t.subtotal)}</td>
+        <td class="right mono">${t.discount}%</td>
+        <td class="right mono">${fmt(t.tax)}</td>
+        <td class="right mono">${fmt(t.total)}</td>
+        <td class="right"><button class="btn" data-viewtx="${t.id}">View</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  };
+
+  const exportCSV = () => {
+    const rows = [
+      ['id','date','items','subtotal','discount_pct','tax','total'],
+      ...state.transactions.map(t=>[
+        t.id, t.date, t.items.reduce((s,x)=>s+x.qty,0), t.subtotal, t.discount, t.tax, t.total
+      ])
+    ];
+    const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href=url; a.download='transactions.csv'; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const clearTx = () => { if(confirm('Clear all transactions?')){ state.transactions=[]; save(); renderTx(); renderReports(); }};
+
+  // --- Reports ---
+  const sumByDate = (isoDate) => state.transactions
+    .filter(t=> t.date.slice(0,10) === isoDate.slice(0,10))
+    .reduce((s,t)=> s + t.total, 0);
+
+  const renderReports = () => {
+    const now = new Date();
+    const iso = (d)=> new Date(d).toISOString();
+    const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const startOfMonth = (d)=> new Date(d.getFullYear(), d.getMonth(), 1);
+
+    const today = startOfDay(now);
+    $('#rToday').textContent = fmt(sumByDate(iso(today)));
+
+    let weekSum = 0; let labels=[]; let data=[];
+    for(let i=6;i>=0;i--){
+      const d = new Date(now); d.setDate(now.getDate()-i);
+      const s = startOfDay(d);
+      const v = sumByDate(iso(s));
+      weekSum += v;
+      labels.push(d.toLocaleDateString(undefined,{weekday:'short'}));
+      data.push(v);
+    }
+    $('#rWeek').textContent = fmt(weekSum);
+
+    // Month
+    const mStart = startOfMonth(now);
+    const monthSum = state.transactions
+      .filter(t=> new Date(t.date) >= mStart)
+      .reduce((s,t)=> s + t.total, 0);
+    $('#rMonth').textContent = fmt(monthSum);
+
+    // Top product
+    const map = new Map();
+    state.transactions.forEach(t=> t.items.forEach(i=> map.set(i.name, (map.get(i.name)||0)+i.qty)));
+    let top='—';
+    if(map.size){
+      const arr=[...map.entries()].sort((a,b)=>b[1]-a[1]);
+      top = `${arr[0][0]} — ${arr[0][1]} sold`;
+    }
+    $('#topProduct').textContent = top;
+
+    // Chart (simple canvas bar chart)
+    drawChart(labels, data);
+  };
+
+  const drawChart = (labels, values) => {
+    const c = $('#chart');
+    const ctx = c.getContext('2d');
+    const w = c.width = c.clientWidth; const h = c.height = 260;
+    ctx.clearRect(0,0,w,h);
+    const max = Math.max(1, ...values);
+    const pad = 30; const gw = (w - pad*2) / values.length; const gh = h - pad*2;
+    ctx.font = '12px ui-sans-serif'; ctx.fillStyle = '#94a3b8';
+    // axes
+    ctx.strokeStyle = '#1f2937'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(pad,pad); ctx.lineTo(pad,h-pad); ctx.lineTo(w-pad,h-pad); ctx.stroke();
+    // bars
+    values.forEach((v,i)=>{
+      const x = pad + i*gw + 12; const bh = (v/max)* (gh-10); const y = h - pad - bh;
+      const grad = ctx.createLinearGradient(0,y, 0, y+bh);
+      grad.addColorStop(0, '#6366f1'); grad.addColorStop(1, '#22d3ee');
+      ctx.fillStyle = grad; ctx.fillRect(x, y, gw-24, bh);
+      ctx.fillStyle = '#94a3b8'; ctx.textAlign='center';
+      ctx.fillText(labels[i], x+(gw-24)/2, h-pad+16);
+    });
+  };
+
+  // --- Settings ---
+  const applySettings = () => {
+    $('#shopName').textContent = state.settings.shopName || 'My Shop';
+    document.documentElement.style.setProperty('--brand', state.settings.tint||'#22d3ee');
+    $('#sName').value = state.settings.shopName || '';
+    $('#sCurrency').value = state.settings.currency || 'RM';
+    $('#sTax').value = state.settings.tax ?? 6;
+    $('#sTint').value = state.settings.tint || '#22d3ee';
+    $('#taxRateLabel').textContent = Number(state.settings.tax||0).toFixed(1);
+  };
+  const saveSettings = () => {
+    state.settings.shopName = $('#sName').value.trim() || 'My Shop';
+    state.settings.currency = $('#sCurrency').value.trim() || 'RM';
+    state.settings.tax = Number($('#sTax').value||0);
+    state.settings.tint = $('#sTint').value.trim() || '#22d3ee';
+    save(); applySettings(); renderCart(); renderReports();
+  };
+
+  // --- Global Search ---
+  const onSearch = () => { renderSellProducts(); renderProductsTable(); };
+
+  // --- Events ---
+  const bind = () => {
+    // Nav
+    $$('.nav button').forEach(b=> b.addEventListener('click', ()=> showPage(b.dataset.page)));
+    // Sell filters
+    $('#filterAll').onclick = ()=>{ state.productFilter='all'; renderSellProducts(); };
+    $('#filterActive').onclick = ()=>{ state.productFilter='active'; renderSellProducts(); };
+    $('#filterInactive').onclick = ()=>{ state.productFilter='inactive'; renderSellProducts(); };
+
+    // Add to cart (delegate)
+    $('#sellProducts').addEventListener('click', (e)=>{
+      const id = e.target.closest('[data-add]')?.dataset.add; if(id) addToCart(id);
+    });
+
+    // Cart events
+    $('#cartTable').addEventListener('click', (e)=>{
+      const inc = e.target.closest('[data-inc]')?.dataset.inc; if(inc) return changeQty(inc, +1);
+      const dec = e.target.closest('[data-dec]')?.dataset.dec; if(dec) return changeQty(dec, -1);
+      const del = e.target.closest('[data-del]')?.dataset.del; if(del) return removeFromCart(del);
+    });
+    $('#discount').addEventListener('input', renderCart);
+    $('#cash').addEventListener('input', renderCart);
+    $('#checkoutBtn').addEventListener('click', checkout);
+    $('#clearCart').addEventListener('click', clearCart);
+
+    // Products
+    $('#btnAddProduct').onclick = ()=> openProductModal();
+    $('#btnSeed').onclick = seedDemo;
+    $('#btnWipe').onclick = ()=>{ if(confirm('Wipe all products?')){ state.products=[]; save(); renderProductsTable(); renderSellProducts(); }};
+
+    $('#productsTable').addEventListener('click', (e)=>{
+      const idEdit = e.target.closest('[data-edit]')?.dataset.edit; if(idEdit){
+        const p = state.products.find(x=>x.id===idEdit); openProductModal(p); return;
       }
-      alert("Thank you for your purchase!");
-      cart.length = 0;
-      renderCart();
-    }
+      const idDel = e.target.closest('[data-remove]')?.dataset.remove; if(idDel){ deleteProduct(idDel); }
+    });
 
-    renderProducts();
-  </script>
-</body>
+    // Product modal buttons
+    $('#pmSave').onclick = saveProductFromModal;
+    $('#pmCancel').onclick = closeProductModal;
+    $('#pmDelete').onclick = ()=>{ if(state.editingProductId){ deleteProduct(state.editingProductId); closeProductModal(); }};
+
+    // Transactions
+    $('#btnExport').onclick = exportCSV;
+    $('#btnClearTx').onclick = clearTx;
+    $('#txTable').addEventListener('click', (e)=>{
+      const id = e.target.closest('[data-viewtx]')?.dataset.viewtx; if(!id) return;
+      const t = state.transactions.find(x=>x.id===id); if(!t) return;
+      const lines = [
+        `ID: ${t.id}`,
+        `Date: ${new Date(t.date).toLocaleString()}`,
+        `Items:`, ...t.items.map(i=>`  - ${i.name} x${i.qty} @ ${fmt(i.price)} = ${fmt(i.price*i.qty)}`),
+        `Subtotal: ${fmt(t.subtotal)}`,
+        `Discount: ${t.discount}%`,
+        `Tax: ${fmt(t.tax)}`,
+        `Total: ${fmt(t.total)}`
+      ].join('\n');
+      $('#txDetails').textContent = lines; $('#txModal').classList.add('open');
+    });
+    $('#txClose').onclick = ()=> $('#txModal').classList.remove('open');
+
+    // Settings
+    $('#btnSaveSettings').onclick = saveSettings;
+
+    // Global search
+    $('#globalSearch').addEventListener('input', onSearch);
+
+    // Close modal on backdrop click
+    $$('#productModal, #txModal').forEach(m=> m.addEventListener('click', (e)=>{ if(e.target===m) m.classList.remove('open'); }));
+  };
+
+  // --- Boot ---
+  const boot = () => {
+    load();
+    applySettings();
+    bind();
+    renderAll();
+    $('#today').textContent = new Date().toLocaleString();
+    $('#aboutMeta').textContent = `Products: ${state.products.length}\nTransactions: ${state.transactions.length}`;
+  };
+
+  const renderAll = () => {
+    renderSellProducts();
+    renderCart();
+    renderProductsTable();
+    renderTx();
+    renderReports();
+  };
+
+  boot();
+})();
+</script></body>
 </html>
