@@ -1,51 +1,215 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Inventori ERP</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>POS System</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f6fa;
+      color: #2f3640;
+    }
+
+    header {
+      background: #0984e3;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .products, .cart {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      color: #0984e3;
+    }
+
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 15px;
+    }
+
+    .product {
+      background: #f1f2f6;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .product:hover {
+      background: #dfe6e9;
+    }
+
+    .product button {
+      background: #0984e3;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    .product button:hover {
+      background: #74b9ff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #f1f2f6;
+    }
+
+    tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    .total {
+      font-weight: bold;
+      text-align: right;
+      margin-top: 10px;
+      font-size: 1.1rem;
+    }
+
+    .checkout {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: #00b894;
+      color: white;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .checkout:hover {
+      background: #55efc4;
+    }
+  </style>
 </head>
 <body>
+  <header>Simple POS System</header>
+
   <div class="container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <h2>ERP Inventori</h2>
-      <ul>
-        <li><a href="#">Dashboard</a></li>
-        <li><a href="#">Stok</a></li>
-        <li><a href="#">Pembekal</a></li>
-        <li><a href="#">Jualan</a></li>
-        <li><a href="#">Laporan</a></li>
-        <li><a href="#">Keluar</a></li>
-      </ul>
+    <!-- Products -->
+    <div class="products">
+      <h2>Products</h2>
+      <div class="product-list" id="productList"></div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-      <div class="header">
-        <h1>Dashboard</h1>
-        <p>Selamat datang ke aplikasi ERP Inventori</p>
-      </div>
-      <div class="statistics">
-        <div class="card">
-          <h3>Jumlah Stok</h3>
-          <p>1,200 kg</p>
-        </div>
-        <div class="card">
-          <h3>Pesanan Belum Diproses</h3>
-          <p>5 Pesanan</p>
-        </div>
-        <div class="card">
-          <h3>Total Jualan</h3>
-          <p>RM 5,000</p>
-        </div>
-        <div class="card">
-          <h3>Pesanan Tertunggak</h3>
-          <p>3 Pesanan</p>
-        </div>
-      </div>
+    <!-- Cart -->
+    <div class="cart">
+      <h2>Cart</h2>
+      <table id="cartTable">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="total" id="total">Total: $0.00</div>
+      <button class="checkout" onclick="checkout()">Checkout</button>
     </div>
   </div>
+
+  <script>
+    const products = [
+      { id: 1, name: "Coffee", price: 3.5 },
+      { id: 2, name: "Tea", price: 2.0 },
+      { id: 3, name: "Sandwich", price: 5.0 },
+      { id: 4, name: "Cake", price: 4.0 },
+      { id: 5, name: "Juice", price: 3.0 }
+    ];
+
+    const cart = [];
+
+    function renderProducts() {
+      const productList = document.getElementById("productList");
+      products.forEach(p => {
+        const div = document.createElement("div");
+        div.className = "product";
+        div.innerHTML = `
+          <h3>${p.name}</h3>
+          <p>$${p.price.toFixed(2)}</p>
+          <button onclick="addToCart(${p.id})">Add</button>
+        `;
+        productList.appendChild(div);
+      });
+    }
+
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      const item = cart.find(c => c.id === id);
+      if (item) {
+        item.qty++;
+      } else {
+        cart.push({ ...product, qty: 1 });
+      }
+      renderCart();
+    }
+
+    function renderCart() {
+      const tbody = document.querySelector("#cartTable tbody");
+      tbody.innerHTML = "";
+      let total = 0;
+      cart.forEach(item => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.qty}</td>
+          <td>$${(item.price * item.qty).toFixed(2)}</td>
+        `;
+        tbody.appendChild(row);
+        total += item.price * item.qty;
+      });
+      document.getElementById("total").innerText = "Total: $" + total.toFixed(2);
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        alert("Cart is empty!");
+        return;
+      }
+      alert("Thank you for your purchase!");
+      cart.length = 0;
+      renderCart();
+    }
+
+    renderProducts();
+  </script>
 </body>
 </html>
